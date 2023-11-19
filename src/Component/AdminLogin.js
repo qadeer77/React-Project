@@ -1,14 +1,16 @@
 import { React, useState } from "react";
 import Swal from "sweetalert2";
-import { useNavigate  } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [loginType, setLoginType] = useState("admin");
   const navigate = useNavigate();
+
+  const handleLoginTypeChange = (e) => {
+    setLoginType(e.target.value);
+  };
 
   const validateEmail = (value) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,9 +31,7 @@ function AdminLogin() {
         text: "Please enter a valid email address",
       });
       return;
-    }
-
-    else if (!validatePassword(password)) {
+    } else if (!validatePassword(password)) {
       Swal.fire({
         icon: "error",
         title: "Invalid Password",
@@ -40,30 +40,49 @@ function AdminLogin() {
       return;
     }
 
-    if (email === "admin@gmail.com" && password === "12345678") {
-        setEmailError("");
-        setPasswordError("");
-        navigate('/home');
-        console.log("Login successful. Email:", email, "Password:", password);
-      }
-
-    setEmailError("");
-    setPasswordError("");
-
-    console.log("Email:", email, "Password:", password);
+    if (loginType === "admin" && email === "admin@gmail.com" && password === "12345678") {
+      setEmail("");
+      setPassword("");
+      navigate("/home");
+      console.log("Admin Login successful. Email:", email, "Password:", password);
+    } else if (loginType === "employee") {
+      navigate("/EmployeeHome");
+      console.log("Employee Login successful. Email:", email, "Password:", password);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Validation",
+        text: "Email does not Match",
+      });
+      return;
+    }
   };
 
   return (
     <div style={styles.centerContainer}>
-      <h2 style={styles.heading}>Sign in to Admin</h2>
+      <div style={styles.dropdownContainer}>
+        <label htmlFor="loginType">Select Login Type: </label>
+        <select
+          id="loginType"
+          style={styles.dropdown}
+          onChange={handleLoginTypeChange}
+          value={loginType}
+        >
+          <option value="admin">Admin Login</option>
+          <option value="employee">Employee Login</option>
+        </select>
+      </div>
+
+      <h2 style={styles.heading}>Sign in</h2>
       <p style={styles.paragraph}>Enter your details below</p>
 
-      <div style={styles.userInfoContainer}>
-        <span>
-          Use email: <strong>admin@gmail.com</strong> / password:{" "}
-          <strong>12345678</strong>
-        </span>
-      </div>
+      {loginType === "admin" && (
+        <div style={styles.userInfoContainer}>
+          <span>
+            Use email: <strong>admin@gmail.com</strong> / password: <strong>12345678</strong>
+          </span>
+        </div>
+      )}
 
       <form style={styles.login} onSubmit={handleSubmit}>
         <input
@@ -135,6 +154,16 @@ const styles = {
     border: "none",
     borderRadius: "7px",
     width: "100%",
+    fontFamily: "'Public Sans', sans-serif",
+  },
+  dropdownContainer: {
+    margin: "15px 0",
+    fontFamily: "'Public Sans', sans-serif",
+  },
+  dropdown: {
+    margin: "8px 0",
+    padding: "10px",
+    borderRadius: "7px",
     fontFamily: "'Public Sans', sans-serif",
   },
 };
