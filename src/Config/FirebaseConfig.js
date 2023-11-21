@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { collection, addDoc, getFirestore } from "firebase/firestore"; 
+import { collection, addDoc, getFirestore, getDocs  } from "firebase/firestore"; 
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbMeFmMMYTP7f1G4myqmC5IafhKdpZKFc",
@@ -15,9 +16,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore()
+const storage = getStorage();
 
 export {
     collection,
     addDoc,
-    db
+    db,
+    storage,
+    ref,
+    uploadBytesResumable,
+    getDownloadURL,
+    getDocs
 }
